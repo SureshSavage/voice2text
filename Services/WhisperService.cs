@@ -40,7 +40,8 @@ public class WhisperService : IWhisperService
         {
             "/usr/local/bin/whisper",
             "/opt/homebrew/bin/whisper",
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "whisper.cpp", "main"),
+            "./whisper.cpp/build/bin/whisper-cli",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "whisper.cpp", "build", "bin", "whisper-cli"),
             "./whisper.cpp/main"
         };
 

@@ -103,5 +103,7 @@
 /Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/examples/whisper.swiftui/whisper.swiftui.demo/Supporting files/Preview Content/Preview Assets.xcassets/Contents.json
 /Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/tests/earnings21/normalizers/english.json
 /Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/tests/librispeech/normalizers/english.json
-/Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/e6d3yg48ci-7o8mnfpw5m.gz
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/VoiceToText.sourcelink.json
+/Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/e6d3yg48ci-u3j6ps78lo.gz
+/Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/build/CMakeFiles/InstallScripts.json
+/Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/build/compile_commands.json

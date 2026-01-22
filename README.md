@@ -100,11 +100,9 @@ voice-to-text-dotnet/
 ### Prerequisites
 
 - .NET 9.0 SDK
-- For Whisper mode:
-  - FFmpeg installed (`brew install ffmpeg` on macOS)
-  - whisper.cpp compiled with a model file
+- Git
 
-### Running the Application
+### Quick Start (Browser API Only)
 
 ```bash
 # Clone the repository
@@ -117,34 +115,204 @@ dotnet run
 # Open browser to https://localhost:5001
 ```
 
-### Configuring Whisper (Optional)
+This will work immediately with Browser API mode for supported languages (English, Spanish, French, etc.).
 
-Add to `appsettings.json`:
+---
+
+## Installing Whisper.cpp (For Tamil, Hindi & Offline Transcription)
+
+Whisper mode is required for:
+- Tamil language support
+- Hindi language support (better accuracy than Browser API)
+- Offline transcription (no internet required)
+- Privacy-sensitive applications (audio stays on your machine)
+
+### Step 1: Install Dependencies
+
+#### macOS (using Homebrew)
+
+```bash
+# Install FFmpeg (required for audio conversion)
+brew install ffmpeg
+
+# Install CMake (required for building whisper.cpp)
+brew install cmake
+```
+
+#### Ubuntu/Debian
+
+```bash
+# Install FFmpeg and build tools
+sudo apt update
+sudo apt install ffmpeg cmake build-essential
+```
+
+#### Windows
+
+1. Install FFmpeg: Download from https://ffmpeg.org/download.html and add to PATH
+2. Install CMake: Download from https://cmake.org/download/
+3. Install Visual Studio Build Tools or Visual Studio with C++ workload
+
+### Step 2: Build whisper.cpp
+
+The whisper.cpp source is included as a submodule in this repository.
+
+```bash
+# Navigate to the project directory
+cd voice2text
+
+# Build whisper.cpp using CMake
+cd whisper.cpp
+cmake -B build
+cmake --build build --config Release
+
+# Verify the build succeeded
+ls build/bin/whisper-cli
+```
+
+On successful build, you should see `whisper-cli` (or `whisper-cli.exe` on Windows) in the `build/bin/` directory.
+
+### Step 3: Download a Whisper Model
+
+Whisper models come in different sizes. Larger models are more accurate but slower.
+
+| Model  | Size   | RAM Required | Speed    | Accuracy |
+|--------|--------|--------------|----------|----------|
+| tiny   | 75 MB  | ~1 GB        | Fastest  | Basic    |
+| base   | 142 MB | ~1 GB        | Fast     | Good     |
+| small  | 466 MB | ~2 GB        | Medium   | Better   |
+| medium | 1.5 GB | ~5 GB        | Slow     | Great    |
+| large  | 3.1 GB | ~10 GB       | Slowest  | Best     |
+
+**Recommended**: Start with `base` model for a good balance of speed and accuracy.
+
+```bash
+# Download the base model (142 MB)
+cd whisper.cpp
+bash models/download-ggml-model.sh base
+
+# The model will be saved to: whisper.cpp/models/ggml-base.bin
+```
+
+To download other models:
+```bash
+# For tiny model (fastest, least accurate)
+bash models/download-ggml-model.sh tiny
+
+# For small model (better accuracy)
+bash models/download-ggml-model.sh small
+
+# For medium model (high accuracy, slower)
+bash models/download-ggml-model.sh medium
+```
+
+### Step 4: Configure the Application
+
+The application is pre-configured to use the default paths. Verify `appsettings.json`:
 
 ```json
 {
   "Whisper": {
-    "ExecutablePath": "/path/to/whisper.cpp/main",
-    "ModelPath": "/path/to/models/ggml-base.bin"
+    "ExecutablePath": "./whisper.cpp/build/bin/whisper-cli",
+    "ModelPath": "./whisper.cpp/models/ggml-base.bin"
   }
 }
 ```
 
+If you downloaded a different model, update the `ModelPath` accordingly.
+
+### Step 5: Test Whisper Installation
+
+```bash
+# Test whisper.cpp directly with a sample audio file
+cd whisper.cpp
+./build/bin/whisper-cli -m models/ggml-base.bin -f samples/jfk.wav -l en
+
+# Expected output:
+# [00:00:00.000 --> 00:00:10.500] And so my fellow Americans ask not what your country can do for you...
+```
+
+### Step 6: Run the Application
+
+```bash
+# Go back to project root
+cd ..
+
+# Run the application
+dotnet run
+```
+
+Now select "Whisper (Server)" mode in the UI to use server-side transcription.
+
+---
+
+## Troubleshooting Whisper Installation
+
+### "Whisper is not available on this server"
+
+1. Check if whisper-cli exists:
+   ```bash
+   ls ./whisper.cpp/build/bin/whisper-cli
+   ```
+
+2. Check if the model file exists:
+   ```bash
+   ls ./whisper.cpp/models/ggml-base.bin
+   ```
+
+3. Verify paths in `appsettings.json` match your installation.
+
+### "Failed to convert audio format"
+
+FFmpeg is not installed or not in PATH.
+
+```bash
+# Check if ffmpeg is installed
+ffmpeg -version
+
+# Install if missing (macOS)
+brew install ffmpeg
+```
+
+### Build Errors
+
+```bash
+# Clean and rebuild
+cd whisper.cpp
+rm -rf build
+cmake -B build
+cmake --build build --config Release
+```
+
+### Model Download Fails
+
+Download manually from Hugging Face:
+- Base model: https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin
+
+Save to `whisper.cpp/models/ggml-base.bin`
+
+---
+
 ## Supported Languages
 
-| Language | Browser API | Whisper |
-|----------|-------------|---------|
-| English (US/UK) | Yes | Yes |
-| Spanish | Yes | Yes |
-| French | Yes | Yes |
-| German | Yes | Yes |
-| Italian | Yes | Yes |
-| Portuguese | Yes | Yes |
-| Chinese | Yes | Yes |
-| Japanese | Yes | Yes |
-| Korean | Yes | Yes |
-| Hindi | Limited | Yes |
-| Tamil | No | Yes |
+| Language | Browser API | Whisper | Language Code |
+|----------|-------------|---------|---------------|
+| English (US) | Yes | Yes | en |
+| English (UK) | Yes | Yes | en |
+| Spanish | Yes | Yes | es |
+| French | Yes | Yes | fr |
+| German | Yes | Yes | de |
+| Italian | Yes | Yes | it |
+| Portuguese | Yes | Yes | pt |
+| Chinese | Yes | Yes | zh |
+| Japanese | Yes | Yes | ja |
+| Korean | Yes | Yes | ko |
+| Hindi | Limited | Yes | hi |
+| Tamil | No | Yes | ta |
+
+Whisper supports 99 languages total. See [whisper.cpp language list](https://github.com/ggerganov/whisper.cpp/blob/master/src/whisper.cpp#L309) for all supported languages.
+
+---
 
 ## API Reference
 
@@ -175,6 +343,8 @@ Check Whisper availability.
   "available": true
 }
 ```
+
+---
 
 ## Tech Stack
 
