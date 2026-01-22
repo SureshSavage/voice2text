@@ -3,6 +3,224 @@
 (function() {
     'use strict';
 
+    // Technical terms dictionary for auto-correction
+    // Maps common misrecognitions to correct technical terms
+    const techTermsCorrections = {
+        // JavaScript/TypeScript
+        'use state': 'useState',
+        'use effect': 'useEffect',
+        'use memo': 'useMemo',
+        'use ref': 'useRef',
+        'use callback': 'useCallback',
+        'use context': 'useContext',
+        'use reducer': 'useReducer',
+        'type script': 'TypeScript',
+        'java script': 'JavaScript',
+        'node js': 'Node.js',
+        'next js': 'Next.js',
+        'react js': 'React.js',
+        'vue js': 'Vue.js',
+        'nuxt js': 'Nuxt.js',
+        'express js': 'Express.js',
+        'nest js': 'NestJS',
+        'j query': 'jQuery',
+        'json': 'JSON',
+        'ajax': 'AJAX',
+        'a sync': 'async',
+        'a wait': 'await',
+        'const': 'const',
+        'let': 'let',
+        'var': 'var',
+
+        // .NET / C#
+        'c sharp': 'C#',
+        'dot net': '.NET',
+        'asp dot net': 'ASP.NET',
+        'asp net': 'ASP.NET',
+        'entity framework': 'Entity Framework',
+        'ef core': 'EF Core',
+        'link': 'LINQ',
+        'new get': 'NuGet',
+        'nu get': 'NuGet',
+        'eye enumerable': 'IEnumerable',
+        'i enumerable': 'IEnumerable',
+        'i list': 'IList',
+        'i collection': 'ICollection',
+        'i queryable': 'IQueryable',
+        'action result': 'ActionResult',
+        'i action result': 'IActionResult',
+        'db context': 'DbContext',
+        'db set': 'DbSet',
+
+        // Python
+        'pie thon': 'Python',
+        'python': 'Python',
+        'pip': 'pip',
+        'pi pi': 'PyPI',
+        'num pie': 'NumPy',
+        'num pi': 'NumPy',
+        'pandas': 'pandas',
+        'psycho pg': 'psycopg',
+        'django': 'Django',
+        'flask': 'Flask',
+        'fast api': 'FastAPI',
+        'fast a p i': 'FastAPI',
+
+        // DevOps / Cloud
+        'cubectl': 'kubectl',
+        'cube c t l': 'kubectl',
+        'kubectl': 'kubectl',
+        'docker': 'Docker',
+        'kubernetes': 'Kubernetes',
+        'k 8 s': 'K8s',
+        'k8s': 'K8s',
+        'aws': 'AWS',
+        'azure': 'Azure',
+        'gcp': 'GCP',
+        'terraform': 'Terraform',
+        'ansible': 'Ansible',
+        'jenkins': 'Jenkins',
+        'ci cd': 'CI/CD',
+        'c i c d': 'CI/CD',
+        'get hub': 'GitHub',
+        'git hub': 'GitHub',
+        'get lab': 'GitLab',
+        'git lab': 'GitLab',
+        'bit bucket': 'Bitbucket',
+
+        // Databases
+        'my sequel': 'MySQL',
+        'my sql': 'MySQL',
+        'post gress': 'PostgreSQL',
+        'postgres': 'PostgreSQL',
+        'post gres q l': 'PostgreSQL',
+        'mongo db': 'MongoDB',
+        'redis': 'Redis',
+        'elastic search': 'Elasticsearch',
+        'dynamo db': 'DynamoDB',
+        'cosmos db': 'CosmosDB',
+        'fire base': 'Firebase',
+        'supabase': 'Supabase',
+        'sequel': 'SQL',
+        's q l': 'SQL',
+        'no sequel': 'NoSQL',
+
+        // Package managers / CLI
+        'npm': 'npm',
+        'n p m': 'npm',
+        'yarn': 'yarn',
+        'p npm': 'pnpm',
+        'pnpm': 'pnpm',
+        'homebrew': 'Homebrew',
+        'brew': 'brew',
+        'apt get': 'apt-get',
+        'apt': 'apt',
+        'yum': 'yum',
+
+        // APIs / Protocols
+        'rest api': 'REST API',
+        'rest a p i': 'REST API',
+        'graph ql': 'GraphQL',
+        'graph q l': 'GraphQL',
+        'grpc': 'gRPC',
+        'g r p c': 'gRPC',
+        'http': 'HTTP',
+        'https': 'HTTPS',
+        'web socket': 'WebSocket',
+        'web sockets': 'WebSockets',
+        'o auth': 'OAuth',
+        'oauth': 'OAuth',
+        'jwt': 'JWT',
+        'j w t': 'JWT',
+
+        // Common programming terms
+        'api': 'API',
+        'a p i': 'API',
+        'sdk': 'SDK',
+        's d k': 'SDK',
+        'cli': 'CLI',
+        'c l i': 'CLI',
+        'gui': 'GUI',
+        'g u i': 'GUI',
+        'ui': 'UI',
+        'u i': 'UI',
+        'ux': 'UX',
+        'u x': 'UX',
+        'html': 'HTML',
+        'h t m l': 'HTML',
+        'css': 'CSS',
+        'c s s': 'CSS',
+        'sass': 'Sass',
+        'scss': 'SCSS',
+        'regex': 'regex',
+        'reg ex': 'regex',
+        'localhost': 'localhost',
+        'local host': 'localhost',
+        'dev ops': 'DevOps',
+        'dev tools': 'DevTools',
+        'vs code': 'VS Code',
+        'v s code': 'VS Code',
+        'visual studio': 'Visual Studio',
+        'intellij': 'IntelliJ',
+
+        // File extensions / formats
+        'dot json': '.json',
+        'dot yaml': '.yaml',
+        'dot yml': '.yml',
+        'dot xml': '.xml',
+        'dot cs': '.cs',
+        'dot js': '.js',
+        'dot ts': '.ts',
+        'dot tsx': '.tsx',
+        'dot jsx': '.jsx',
+        'dot py': '.py',
+        'dot env': '.env',
+        'dot git ignore': '.gitignore',
+        'git ignore': '.gitignore',
+
+        // Common commands
+        'cd': 'cd',
+        'ls': 'ls',
+        'mkdir': 'mkdir',
+        'rm': 'rm',
+        'sudo': 'sudo',
+        'chmod': 'chmod',
+        'chown': 'chown',
+        'grep': 'grep',
+        'cat': 'cat',
+        'echo': 'echo',
+        'curl': 'curl',
+        'wget': 'wget',
+
+        // AI/ML
+        'open ai': 'OpenAI',
+        'open a i': 'OpenAI',
+        'chat gpt': 'ChatGPT',
+        'gpt': 'GPT',
+        'g p t': 'GPT',
+        'llm': 'LLM',
+        'l l m': 'LLM',
+        'whisper': 'Whisper',
+        'tensor flow': 'TensorFlow',
+        'pie torch': 'PyTorch',
+        'pi torch': 'PyTorch',
+    };
+
+    // Build a case-insensitive regex pattern
+    let techTermsEnabled = true;
+
+    function correctTechnicalTerms(text) {
+        if (!techTermsEnabled) return text;
+
+        let corrected = text;
+        for (const [wrong, correct] of Object.entries(techTermsCorrections)) {
+            // Case-insensitive replacement with word boundaries
+            const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+            corrected = corrected.replace(regex, correct);
+        }
+        return corrected;
+    }
+
     // DOM Elements
     const startBtn = document.getElementById('startBtn');
     const stopBtn = document.getElementById('stopBtn');
@@ -16,6 +234,7 @@
     const charCountEl = document.getElementById('charCount');
     const modeBtns = document.querySelectorAll('.mode-btn');
     const whisperInfo = document.getElementById('whisperInfo');
+    const techTermsCheckbox = document.getElementById('techTerms');
 
     // State
     let recognition = null;
@@ -96,15 +315,17 @@
             let interimTranscript = '';
 
             for (let i = event.resultIndex; i < event.results.length; i++) {
-                const transcript = event.results[i][0].transcript;
+                let transcript = event.results[i][0].transcript;
                 if (event.results[i].isFinal) {
+                    // Apply technical term corrections to final results
+                    transcript = correctTechnicalTerms(transcript);
                     finalTranscript += transcript + ' ';
                 } else {
                     interimTranscript += transcript;
                 }
             }
 
-            output.value = finalTranscript + interimTranscript;
+            output.value = finalTranscript + correctTechnicalTerms(interimTranscript);
             output.scrollTop = output.scrollHeight;
             updateCounts();
         };
@@ -150,6 +371,13 @@
                 recognition.lang = languageSelect.value;
             }
         });
+
+        // Toggle tech terms auto-correction
+        if (techTermsCheckbox) {
+            techTermsCheckbox.addEventListener('change', () => {
+                techTermsEnabled = techTermsCheckbox.checked;
+            });
+        }
 
         output.addEventListener('input', updateCounts);
     }
@@ -236,7 +464,9 @@
             if (response.ok) {
                 const result = await response.json();
                 if (result.text) {
-                    finalTranscript += result.text + ' ';
+                    // Apply technical term corrections
+                    const correctedText = correctTechnicalTerms(result.text);
+                    finalTranscript += correctedText + ' ';
                     output.value = finalTranscript;
                     output.scrollTop = output.scrollHeight;
                     updateCounts();
