@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VoiceToText")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b2b8d2d435f0cb2282d398e47d1505ece8af23a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c6c6ef7215b1f8c17a919f2f77644e2fcd744ffa")]
 [assembly: System.Reflection.AssemblyProductAttribute("VoiceToText")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VoiceToText")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
