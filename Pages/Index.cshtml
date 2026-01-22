@@ -1,0 +1,74 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Voice to Text";
+}
+
+<div class="container main-container">
+    <h1>Voice to Text</h1>
+    <p class="subtitle">Click Start and speak into your microphone</p>
+
+    <div class="settings">
+        <div class="setting-group">
+            <label for="language">Language:</label>
+            <select id="language">
+                <option value="en-US">English (US)</option>
+                <option value="en-GB">English (UK)</option>
+                <option value="es-ES">Spanish</option>
+                <option value="fr-FR">French</option>
+                <option value="de-DE">German</option>
+                <option value="it-IT">Italian</option>
+                <option value="pt-BR">Portuguese (Brazil)</option>
+                <option value="zh-CN">Chinese (Mandarin)</option>
+                <option value="ja-JP">Japanese</option>
+                <option value="ko-KR">Korean</option>
+                <option value="hi-IN">Hindi</option>
+                <option value="ta-IN">Tamil</option>
+            </select>
+        </div>
+        <div class="setting-group">
+            <input type="checkbox" id="continuous" checked>
+            <label for="continuous">Continuous listening</label>
+        </div>
+    </div>
+
+    <div class="mode-selector">
+        <button class="mode-btn active" data-mode="browser">Browser API</button>
+        <button class="mode-btn" data-mode="whisper">Whisper (Server)</button>
+    </div>
+
+    <div class="controls">
+        <button id="startBtn" class="btn btn-start">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+            </svg>
+            Start Listening
+        </button>
+        <button id="stopBtn" class="btn btn-stop" disabled>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="6" width="12" height="12" rx="2"/>
+            </svg>
+            Stop
+        </button>
+        <button id="clearBtn" class="btn btn-clear">Clear</button>
+        <button id="copyBtn" class="btn btn-copy">Copy</button>
+    </div>
+
+    <div id="status" class="status stopped">Ready to listen</div>
+
+    <textarea id="output" placeholder="Your transcribed text will appear here..."></textarea>
+
+    <div class="word-count">
+        Words: <span id="wordCount">0</span> | Characters: <span id="charCount">0</span>
+    </div>
+
+    <div id="whisperInfo" class="info whisper-info" style="display: none;">
+        Whisper mode requires the server to have whisper.cpp installed.
+        Audio is recorded and sent to the server for transcription.
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/voice-to-text.js"></script>
+}
