@@ -343,6 +343,16 @@ body {
   border-left-color: #6c5ce7;
 }
 
+.whisper-info a {
+  color: #6c5ce7;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.whisper-info a:hover {
+  text-decoration: underline;
+}
+
 /* Hide default layout elements for cleaner look */
 header, footer {
   display: none;

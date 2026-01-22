@@ -105,5 +105,5 @@
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/VoiceToText.sourcelink.json
 /Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/build/CMakeFiles/InstallScripts.json
 /Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/build/compile_commands.json
-/Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/1nolaika4f-7yhpdz37yv.gz
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/e6d3yg48ci-v5fydyex6v.gz
+/Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/1nolaika4f-jpqhtb5w5s.gz

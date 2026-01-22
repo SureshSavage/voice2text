@@ -6,7 +6,7 @@ A web-based voice-to-text application built with ASP.NET Core that supports two 
 
 - **Dual Transcription Modes**:
   - **Browser API**: Uses the Web Speech API (Chrome/Edge) for real-time transcription
-  - **Whisper Mode**: Server-side transcription using OpenAI's Whisper model via whisper.cpp
+  - **Whisper Mode**: Server-side transcription using OpenAI's Whisper model via [whisper.cpp](https://github.com/ggml-org/whisper.cpp)
 - **Multi-language Support**: English, Spanish, French, German, Italian, Portuguese, Chinese, Japanese, Korean, Hindi, and Tamil
 - **Technical Terms Auto-correction**: Automatically corrects common programming terms (e.g., "use state" -> "useState", "java script" -> "JavaScript")
 - **Continuous Listening Mode**: Keep transcribing without manually restarting
@@ -49,6 +49,8 @@ voice-to-text-dotnet/
 **Limitations**: Some languages (Tamil, Hindi) have limited or no support in Browser API.
 
 ### Mode 2: Whisper (Server)
+
+Uses [whisper.cpp](https://github.com/ggml-org/whisper.cpp) for server-side transcription.
 
 ```
 ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
@@ -120,6 +122,9 @@ This will work immediately with Browser API mode for supported languages (Englis
 ---
 
 ## Installing Whisper.cpp (For Tamil, Hindi & Offline Transcription)
+
+> **whisper.cpp** is a high-performance C/C++ implementation of OpenAI's Whisper automatic speech recognition model.
+> GitHub: [https://github.com/ggml-org/whisper.cpp](https://github.com/ggml-org/whisper.cpp)
 
 Whisper mode is required for:
 - Tamil language support
@@ -310,7 +315,7 @@ Save to `whisper.cpp/models/ggml-base.bin`
 | Hindi | Limited | Yes | hi |
 | Tamil | No | Yes | ta |
 
-Whisper supports 99 languages total. See [whisper.cpp language list](https://github.com/ggerganov/whisper.cpp/blob/master/src/whisper.cpp#L309) for all supported languages.
+Whisper supports 99 languages total. See [whisper.cpp language list](https://github.com/ggml-org/whisper.cpp) for all supported languages.
 
 ---
 
@@ -350,7 +355,7 @@ Check Whisper availability.
 
 - **Backend**: ASP.NET Core 9.0, Razor Pages
 - **Frontend**: Vanilla JavaScript, Web Speech API, MediaRecorder API
-- **Transcription**: whisper.cpp (OpenAI Whisper)
+- **Transcription**: [whisper.cpp](https://github.com/ggml-org/whisper.cpp) (OpenAI Whisper)
 - **Audio Processing**: FFmpeg
 
 ## License
