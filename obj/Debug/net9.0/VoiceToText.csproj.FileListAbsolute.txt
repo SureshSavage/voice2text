@@ -17,7 +17,6 @@
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/scopedcss/Pages/Shared/_Layout.cshtml.rz.scp.css
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/scopedcss/bundle/VoiceToText.styles.css
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/scopedcss/projectbundle/VoiceToText.bundle.scp.css
-/Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/1nolaika4f-irdcdgn5l0.gz
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/nhvviuiilg-61n19gt1b8.gz
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/y7s44pjk4q-xtxxf3hu2r.gz
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/9br0o2uagp-bqjiyaj88i.gz
@@ -104,6 +103,7 @@
 /Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/tests/earnings21/normalizers/english.json
 /Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/tests/librispeech/normalizers/english.json
 /Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/VoiceToText.sourcelink.json
-/Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/e6d3yg48ci-u3j6ps78lo.gz
 /Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/build/CMakeFiles/InstallScripts.json
 /Users/sugunasavage/voice-to-text-dotnet/bin/Debug/net9.0/whisper.cpp/build/compile_commands.json
+/Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/1nolaika4f-7yhpdz37yv.gz
+/Users/sugunasavage/voice-to-text-dotnet/obj/Debug/net9.0/compressed/e6d3yg48ci-v5fydyex6v.gz

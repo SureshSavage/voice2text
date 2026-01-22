@@ -67,6 +67,36 @@
         Words: <span id="wordCount">0</span> | Characters: <span id="charCount">0</span>
     </div>
 
+    <div id="modelStats" class="model-stats" style="display: none;">
+        <h4>Model Statistics</h4>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-label">Model</span>
+                <span id="modelName" class="stat-value">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Model Size</span>
+                <span id="modelSize" class="stat-value">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Audio Duration</span>
+                <span id="audioDuration" class="stat-value">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Processing Time</span>
+                <span id="processingTime" class="stat-value">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Audio File Size</span>
+                <span id="audioFileSize" class="stat-value">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Speed Ratio</span>
+                <span id="speedRatio" class="stat-value">-</span>
+            </div>
+        </div>
+    </div>
+
     <div id="whisperInfo" class="info whisper-info" style="display: none;">
         Whisper mode requires the server to have whisper.cpp installed.
         Audio is recorded and sent to the server for transcription.

@@ -236,6 +236,15 @@
     const whisperInfo = document.getElementById('whisperInfo');
     const techTermsCheckbox = document.getElementById('techTerms');
 
+    // Stats elements
+    const modelStatsEl = document.getElementById('modelStats');
+    const modelNameEl = document.getElementById('modelName');
+    const modelSizeEl = document.getElementById('modelSize');
+    const audioDurationEl = document.getElementById('audioDuration');
+    const processingTimeEl = document.getElementById('processingTime');
+    const audioFileSizeEl = document.getElementById('audioFileSize');
+    const speedRatioEl = document.getElementById('speedRatio');
+
     // State
     let recognition = null;
     let finalTranscript = '';
@@ -243,6 +252,7 @@
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
+    let modelInfo = null;
 
     // Initialize
     init();
@@ -251,6 +261,54 @@
         setupModeSelector();
         setupBrowserSpeechRecognition();
         setupEventListeners();
+        fetchModelInfo();
+    }
+
+    async function fetchModelInfo() {
+        try {
+            const response = await fetch('/api/whisper/model');
+            if (response.ok) {
+                modelInfo = await response.json();
+                if (modelNameEl) modelNameEl.textContent = modelInfo.modelName || '-';
+                if (modelSizeEl) modelSizeEl.textContent = modelInfo.modelSizeFormatted || '-';
+            }
+        } catch (err) {
+            console.log('Could not fetch model info:', err);
+        }
+    }
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 B';
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+    }
+
+    function formatDuration(seconds) {
+        if (seconds < 60) return seconds.toFixed(1) + 's';
+        const mins = Math.floor(seconds / 60);
+        const secs = (seconds % 60).toFixed(1);
+        return `${mins}m ${secs}s`;
+    }
+
+    function updateStats(stats) {
+        if (!modelStatsEl) return;
+
+        modelStatsEl.style.display = 'block';
+
+        if (audioDurationEl) {
+            audioDurationEl.textContent = formatDuration(stats.audioDurationSeconds);
+        }
+        if (processingTimeEl) {
+            processingTimeEl.textContent = (stats.processingTimeMs / 1000).toFixed(2) + 's';
+        }
+        if (audioFileSizeEl) {
+            audioFileSizeEl.textContent = formatBytes(stats.audioFileSizeBytes);
+        }
+        if (speedRatioEl && stats.audioDurationSeconds > 0) {
+            const ratio = stats.audioDurationSeconds / (stats.processingTimeMs / 1000);
+            speedRatioEl.textContent = ratio.toFixed(2) + 'x';
+        }
     }
 
     function setupModeSelector() {
@@ -264,6 +322,8 @@
                     whisperInfo.style.display = 'block';
                 } else {
                     whisperInfo.style.display = 'none';
+                    // Hide stats when switching to browser mode
+                    if (modelStatsEl) modelStatsEl.style.display = 'none';
                 }
 
                 // Stop any ongoing recognition when switching modes
@@ -473,6 +533,10 @@
                     output.value = finalTranscript;
                     output.scrollTop = output.scrollHeight;
                     updateCounts();
+                }
+                // Update stats display
+                if (result.stats) {
+                    updateStats(result.stats);
                 }
                 setStatus('Transcription complete', 'stopped');
             } else {

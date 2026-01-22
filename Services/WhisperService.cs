@@ -2,10 +2,32 @@ using System.Diagnostics;
 
 namespace VoiceToText.Services;
 
+public class TranscriptionResult
+{
+    public string Text { get; set; } = string.Empty;
+    public TranscriptionStats Stats { get; set; } = new();
+}
+
+public class TranscriptionStats
+{
+    public double ProcessingTimeMs { get; set; }
+    public long AudioFileSizeBytes { get; set; }
+    public double AudioDurationSeconds { get; set; }
+}
+
+public class ModelInfo
+{
+    public string ModelName { get; set; } = string.Empty;
+    public long ModelSizeBytes { get; set; }
+    public string ModelSizeFormatted { get; set; } = string.Empty;
+    public string ModelPath { get; set; } = string.Empty;
+}
+
 public interface IWhisperService
 {
-    Task<string> TranscribeAsync(Stream audioStream, string language);
+    Task<TranscriptionResult> TranscribeAsync(Stream audioStream, string language);
     bool IsAvailable();
+    ModelInfo GetModelInfo();
 }
 
 public class WhisperService : IWhisperService
@@ -48,11 +70,44 @@ public class WhisperService : IWhisperService
         return commonPaths.Any(File.Exists);
     }
 
-    public async Task<string> TranscribeAsync(Stream audioStream, string language)
+    public ModelInfo GetModelInfo()
+    {
+        var info = new ModelInfo
+        {
+            ModelPath = _modelPath,
+            ModelName = Path.GetFileName(_modelPath)
+        };
+
+        if (File.Exists(_modelPath))
+        {
+            var fileInfo = new FileInfo(_modelPath);
+            info.ModelSizeBytes = fileInfo.Length;
+            info.ModelSizeFormatted = FormatBytes(fileInfo.Length);
+        }
+
+        return info;
+    }
+
+    private static string FormatBytes(long bytes)
+    {
+        string[] sizes = { "B", "KB", "MB", "GB" };
+        double len = bytes;
+        int order = 0;
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len /= 1024;
+        }
+        return $"{len:0.##} {sizes[order]}";
+    }
+
+    public async Task<TranscriptionResult> TranscribeAsync(Stream audioStream, string language)
     {
         var inputPath = Path.Combine(_tempDir, $"{Guid.NewGuid()}.webm");
         var wavPath = Path.Combine(_tempDir, $"{Guid.NewGuid()}.wav");
         var outputPath = Path.Combine(_tempDir, $"{Guid.NewGuid()}");
+        var stopwatch = Stopwatch.StartNew();
+        var stats = new TranscriptionStats();
 
         try
         {
@@ -61,6 +116,7 @@ public class WhisperService : IWhisperService
             {
                 await audioStream.CopyToAsync(fileStream);
             }
+            stats.AudioFileSizeBytes = new FileInfo(inputPath).Length;
 
             // Convert to WAV format (16kHz mono) using ffmpeg
             var convertResult = await RunProcessAsync("ffmpeg",
@@ -70,6 +126,14 @@ public class WhisperService : IWhisperService
             {
                 _logger.LogError("FFmpeg conversion failed: {Error}", convertResult.Error);
                 throw new Exception("Failed to convert audio format. Make sure ffmpeg is installed.");
+            }
+
+            // Calculate audio duration from WAV file (16kHz, mono, 16-bit = 32000 bytes per second)
+            if (File.Exists(wavPath))
+            {
+                var wavSize = new FileInfo(wavPath).Length;
+                // WAV header is 44 bytes, 16kHz mono 16-bit = 32000 bytes/sec
+                stats.AudioDurationSeconds = Math.Max(0, (wavSize - 44) / 32000.0);
             }
 
             // Run whisper.cpp
@@ -82,15 +146,22 @@ public class WhisperService : IWhisperService
                 throw new Exception("Whisper transcription failed. Check server logs.");
             }
 
+            stopwatch.Stop();
+            stats.ProcessingTimeMs = stopwatch.Elapsed.TotalMilliseconds;
+
             // Read the output
             var textFile = outputPath + ".txt";
+            var text = string.Empty;
             if (File.Exists(textFile))
             {
-                var text = await File.ReadAllTextAsync(textFile);
-                return text.Trim();
+                text = (await File.ReadAllTextAsync(textFile)).Trim();
+            }
+            else
+            {
+                text = whisperResult.Output?.Trim() ?? string.Empty;
             }
 
-            return whisperResult.Output?.Trim() ?? string.Empty;
+            return new TranscriptionResult { Text = text, Stats = stats };
         }
         finally
         {
