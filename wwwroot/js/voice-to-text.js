@@ -347,6 +347,9 @@
                 case 'network':
                     errorMessage += 'Network error occurred.';
                     break;
+                case 'service-not-allowed':
+                    errorMessage += 'Language not supported in Browser mode. Please use Whisper (Server) mode for this language.';
+                    break;
                 default:
                     errorMessage += event.error;
             }
