@@ -2,12 +2,26 @@ using System.Diagnostics;
 
 namespace VoiceToText.Services;
 
+/// <summary>
+/// DATA CLASS: Contains the result of a transcription operation.
+///
+/// CLASS TYPE: Data Class / DTO (Plain Old CLR Object)
+/// - Simple data container with no business logic
+/// - Holds transcribed text and performance statistics
+/// </summary>
 public class TranscriptionResult
 {
     public string Text { get; set; } = string.Empty;
     public TranscriptionStats Stats { get; set; } = new();
 }
 
+/// <summary>
+/// DATA CLASS: Contains statistics about a transcription operation.
+///
+/// CLASS TYPE: Data Class / DTO
+/// - Performance metrics for transcription
+/// - Processing time, file size, audio duration
+/// </summary>
 public class TranscriptionStats
 {
     public double ProcessingTimeMs { get; set; }
@@ -15,6 +29,13 @@ public class TranscriptionStats
     public double AudioDurationSeconds { get; set; }
 }
 
+/// <summary>
+/// DATA CLASS: Contains information about the Whisper model.
+///
+/// CLASS TYPE: Data Class / DTO
+/// - Model metadata (name, size, path)
+/// - Used for displaying model information in UI
+/// </summary>
 public class ModelInfo
 {
     public string ModelName { get; set; } = string.Empty;
@@ -23,13 +44,70 @@ public class ModelInfo
     public string ModelPath { get; set; } = string.Empty;
 }
 
+/// <summary>
+/// INTERFACE: Defines the contract for Whisper transcription operations.
+///
+/// CLASS TYPE: Interface (Abstract Contract)
+/// - Defines WHAT transcription operations must be implemented
+/// - Enables dependency injection and unit testing
+/// - Single implementation: WhisperService
+///
+/// IMPLEMENTATIONS:
+/// - WhisperService: Uses whisper.cpp CLI for transcription
+/// </summary>
 public interface IWhisperService
 {
+    /// <summary>Transcribes audio from a stream to text.</summary>
     Task<TranscriptionResult> TranscribeAsync(Stream audioStream, string language);
+
+    /// <summary>Checks if Whisper is available on the system.</summary>
     bool IsAvailable();
+
+    /// <summary>Gets information about the loaded Whisper model.</summary>
     ModelInfo GetModelInfo();
 }
 
+/// <summary>
+/// CONCRETE CLASS: Implements IWhisperService using whisper.cpp CLI.
+///
+/// CLASS TYPE: Concrete Class (Full Implementation)
+/// - Implements IWhisperService interface
+/// - Uses external whisper.cpp binary for transcription
+/// - Handles audio format conversion via FFmpeg
+///
+/// KEY CHARACTERISTICS:
+/// - IMPLEMENTS: IWhisperService interface
+/// - Uses COMPOSITION: Contains ILogger and IConfiguration (HAS-A)
+/// - Process management for external CLI tools
+/// - Temporary file management with cleanup
+///
+/// EXTERNAL DEPENDENCIES:
+/// - whisper.cpp: Native Whisper implementation (C++)
+/// - FFmpeg: Audio format conversion (WebM -> WAV)
+///
+/// WORKFLOW:
+/// 1. Save uploaded audio to temp file
+/// 2. Convert to 16kHz WAV using FFmpeg
+/// 3. Run whisper.cpp with language parameter
+/// 4. Read output text file
+/// 5. Cleanup temporary files
+///
+/// NESTED CLASSES:
+/// - ProcessResult: Private class for process execution results
+///
+/// USAGE:
+/// <code>
+/// // Registration
+/// builder.Services.AddSingleton&lt;IWhisperService, WhisperService&gt;();
+///
+/// // Usage
+/// if (_whisperService.IsAvailable())
+/// {
+///     var result = await _whisperService.TranscribeAsync(audioStream, "en");
+///     Console.WriteLine(result.Text);
+/// }
+/// </code>
+/// </summary>
 public class WhisperService : IWhisperService
 {
     private readonly ILogger<WhisperService> _logger;
